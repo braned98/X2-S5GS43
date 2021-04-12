@@ -28,6 +28,8 @@ namespace PR24_2017_PZ2
         double minY, maxY;
         int size = 200;       ///200x200
         List<SubstationEntity> subEnt = new List<SubstationEntity>();
+        List<NodeEntity> nodeEnt = new List<NodeEntity>();
+        List<SwitchEntity> swcEnt = new List<SwitchEntity>();
 
         public MainWindow()
         {
@@ -40,11 +42,12 @@ namespace PR24_2017_PZ2
             xmlDoc.Load("Geographic.xml");
 
             XmlNodeList nodeList;
-
-            
-            
+            XmlNodeList nodeList2;
+            XmlNodeList nodeList3;
 
             nodeList = xmlDoc.DocumentElement.SelectNodes("/NetworkModel/Substations/SubstationEntity");
+            nodeList2 = xmlDoc.DocumentElement.SelectNodes("/NetworkModel/Nodes/NodeEntity");
+            nodeList3 = xmlDoc.DocumentElement.SelectNodes("/NetworkModel/Switches/SwitchEntity");
 
             minX = double.Parse(nodeList[0].SelectSingleNode("X").InnerText);
             maxX = minX;
@@ -52,6 +55,8 @@ namespace PR24_2017_PZ2
             maxY = minY;
 
             findMaxMin(nodeList);
+            findMaxMin(nodeList2);
+            findMaxMin(nodeList3);
 
             foreach (XmlNode node in nodeList)
             {
@@ -69,9 +74,45 @@ namespace PR24_2017_PZ2
                 
             }
 
-            DrawPoints();
-            
+            nodeList = xmlDoc.DocumentElement.SelectNodes("/NetworkModel/Nodes/NodeEntity");
+            foreach (XmlNode node in nodeList)
+            {
+                NodeEntity nodeobj = new NodeEntity();
+                nodeobj.Id = long.Parse(node.SelectSingleNode("Id").InnerText);
+                nodeobj.Name = node.SelectSingleNode("Name").InnerText;
+                nodeobj.X = double.Parse(node.SelectSingleNode("X").InnerText);
+                nodeobj.Y = double.Parse(node.SelectSingleNode("Y").InnerText);
+
+                nodeobj.X = CalculateXCoord(nodeobj.X, minX, maxX);
+                nodeobj.Y = CalculateYCoord(nodeobj.Y, minY, maxY);
+
+                nodeEnt.Add(nodeobj);
+
+            }
+
+            nodeList = xmlDoc.DocumentElement.SelectNodes("/NetworkModel/Switches/SwitchEntity");
+            foreach (XmlNode node in nodeList)
+            {
+                SwitchEntity switchobj = new SwitchEntity();
+                switchobj.Id = long.Parse(node.SelectSingleNode("Id").InnerText);
+                switchobj.Name = node.SelectSingleNode("Name").InnerText;
+                switchobj.X = double.Parse(node.SelectSingleNode("X").InnerText);
+                switchobj.Y = double.Parse(node.SelectSingleNode("Y").InnerText);
+                switchobj.Status = node.SelectSingleNode("Status").InnerText;
+
+                switchobj.X = CalculateXCoord(switchobj.X, minX, maxX);
+                switchobj.Y = CalculateYCoord(switchobj.Y, minY, maxY);
+
+                swcEnt.Add(switchobj);
+            }
+
+            DrawSubPoints();
+            DrawNodPoints();
+            DrawSwcPoints();
+
         }
+
+
 
         private int CalculateXCoord(double x, double minX, double maxX)
         {
@@ -140,7 +181,7 @@ namespace PR24_2017_PZ2
 
         }
 
-        private void DrawPoints()
+        private void DrawSubPoints()
         {
             foreach(SubstationEntity sub in subEnt)
             {
@@ -151,6 +192,38 @@ namespace PR24_2017_PZ2
 
                 Canvas.SetLeft(circle, sub.X*4);
                 Canvas.SetTop(circle, sub.Y*4);
+
+                canvas.Children.Add(circle);
+            }
+        }
+
+        private void DrawNodPoints()
+        {
+            foreach (NodeEntity sub in nodeEnt)
+            {
+                Ellipse circle = new Ellipse();
+                circle.Width = canvas.Width / 200;
+                circle.Height = canvas.Height / 200;
+                circle.Fill = Brushes.Red;
+
+                Canvas.SetLeft(circle, sub.X * 4);
+                Canvas.SetTop(circle, sub.Y * 4);
+
+                canvas.Children.Add(circle);
+            }
+        }
+
+        private void DrawSwcPoints()
+        {
+            foreach (SwitchEntity sub in swcEnt)
+            {
+                Ellipse circle = new Ellipse();
+                circle.Width = canvas.Width / 200;
+                circle.Height = canvas.Height / 200;
+                circle.Fill = Brushes.Green;
+
+                Canvas.SetLeft(circle, sub.X * 4);
+                Canvas.SetTop(circle, sub.Y * 4);
 
                 canvas.Children.Add(circle);
             }
