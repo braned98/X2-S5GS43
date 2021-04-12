@@ -8,11 +8,11 @@
         xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" 
         xmlns:local="clr-namespace:PR24_2017_PZ2"
         mc:Ignorable="d"
-        Title="PR24-2017" Height="840" Width="800" Loaded="Load" >
+        Title="PR24-2017" Height="680" Width="680" Loaded="Load" >
 
     <Grid>
         <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
-            <Canvas Name="canvas" Width="800" Height="800">
+            <Canvas Name="canvas" Width="600" Height="600">
 
             </Canvas>
         </ScrollViewer>

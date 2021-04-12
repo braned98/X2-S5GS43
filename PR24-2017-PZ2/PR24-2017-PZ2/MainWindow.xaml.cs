@@ -26,7 +26,7 @@ namespace PR24_2017_PZ2
 
         double minX, maxX;
         double minY, maxY;
-        int size = 200;       ///200x200
+        int size = 1000;       ///1000x1000
         List<SubstationEntity> subEnt = new List<SubstationEntity>();
         List<NodeEntity> nodeEnt = new List<NodeEntity>();
         List<SwitchEntity> swcEnt = new List<SwitchEntity>();
@@ -190,8 +190,8 @@ namespace PR24_2017_PZ2
                 circle.Height = canvas.Height/200;
                 circle.Fill = Brushes.Black;
 
-                Canvas.SetLeft(circle, sub.X*4);
-                Canvas.SetTop(circle, sub.Y*4);
+                Canvas.SetLeft(circle, sub.X* (canvas.Width / size));
+                Canvas.SetTop(circle, sub.Y* (canvas.Height / size));
 
                 canvas.Children.Add(circle);
             }
@@ -206,8 +206,8 @@ namespace PR24_2017_PZ2
                 circle.Height = canvas.Height / 200;
                 circle.Fill = Brushes.Red;
 
-                Canvas.SetLeft(circle, sub.X * 4);
-                Canvas.SetTop(circle, sub.Y * 4);
+                Canvas.SetLeft(circle, sub.X *(canvas.Width/size));
+                Canvas.SetTop(circle, sub.Y *(canvas.Height/size));
 
                 canvas.Children.Add(circle);
             }
@@ -222,8 +222,8 @@ namespace PR24_2017_PZ2
                 circle.Height = canvas.Height / 200;
                 circle.Fill = Brushes.Green;
 
-                Canvas.SetLeft(circle, sub.X * 4);
-                Canvas.SetTop(circle, sub.Y * 4);
+                Canvas.SetLeft(circle, sub.X * (canvas.Width / size));
+                Canvas.SetTop(circle, sub.Y * (canvas.Height / size));
 
                 canvas.Children.Add(circle);
             }
