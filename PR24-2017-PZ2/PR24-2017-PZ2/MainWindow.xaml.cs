@@ -16,6 +16,7 @@ using System.Xml;
 using PR24_2017_PZ2.Model;
 
 
+
 namespace PR24_2017_PZ2
 {
     /// <summary>
@@ -24,9 +25,10 @@ namespace PR24_2017_PZ2
     public partial class MainWindow : Window
     {
 
+        double _zoomValue = 1.0;
         double minX, maxX;
         double minY, maxY;
-        int size = 1000;       ///1000x1000
+        int size = 500;       ///500x500
         List<SubstationEntity> subEnt = new List<SubstationEntity>();
         List<NodeEntity> nodeEnt = new List<NodeEntity>();
         List<SwitchEntity> swcEnt = new List<SwitchEntity>();
@@ -186,8 +188,8 @@ namespace PR24_2017_PZ2
             foreach(SubstationEntity sub in subEnt)
             {
                 Ellipse circle = new Ellipse();
-                circle.Width = canvas.Width/200;
-                circle.Height = canvas.Height/200;
+                circle.Width = canvas.Width/size;
+                circle.Height = canvas.Height/size;
                 circle.Fill = Brushes.Black;
 
                 Canvas.SetLeft(circle, sub.X* (canvas.Width / size));
@@ -202,8 +204,8 @@ namespace PR24_2017_PZ2
             foreach (NodeEntity sub in nodeEnt)
             {
                 Ellipse circle = new Ellipse();
-                circle.Width = canvas.Width / 200;
-                circle.Height = canvas.Height / 200;
+                circle.Width = canvas.Width / size;
+                circle.Height = canvas.Height / size;
                 circle.Fill = Brushes.Red;
 
                 Canvas.SetLeft(circle, sub.X *(canvas.Width/size));
@@ -218,8 +220,8 @@ namespace PR24_2017_PZ2
             foreach (SwitchEntity sub in swcEnt)
             {
                 Ellipse circle = new Ellipse();
-                circle.Width = canvas.Width / 200;
-                circle.Height = canvas.Height / 200;
+                circle.Width = canvas.Width / size;
+                circle.Height = canvas.Height / size;
                 circle.Fill = Brushes.Green;
 
                 Canvas.SetLeft(circle, sub.X * (canvas.Width / size));
@@ -227,6 +229,33 @@ namespace PR24_2017_PZ2
 
                 canvas.Children.Add(circle);
             }
+        }
+
+
+        private void MouseWheelZoom(object sender, MouseWheelEventArgs e)
+        {
+            
+
+            if (e.Delta > 0)
+            {
+                _zoomValue += 0.2;
+            }
+            else
+            {
+                if(_zoomValue <= 0.5)
+                {
+                    return;
+                }
+                _zoomValue -= 0.2;
+            }
+
+            System.Windows.Point mousePos = e.GetPosition(canvas);
+
+            ScaleTransform scale = new ScaleTransform(_zoomValue, _zoomValue, mousePos.X, mousePos.Y);
+            
+            canvas.LayoutTransform = scale;
+          
+            e.Handled = true;
         }
     }
 }

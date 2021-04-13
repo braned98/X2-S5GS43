@@ -11,8 +11,8 @@
         Title="PR24-2017" Height="680" Width="680" Loaded="Load" >
 
     <Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
-            <Canvas Name="canvas" Width="600" Height="600">
+        <ScrollViewer CanContentScroll="True" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+            <Canvas Name="canvas" Width="600" Height="600" MouseWheel="MouseWheelZoom" Background="Transparent" Margin="0,0,0,0">
 
             </Canvas>
         </ScrollViewer>
