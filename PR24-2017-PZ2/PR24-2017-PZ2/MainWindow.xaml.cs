@@ -33,6 +33,10 @@ namespace PR24_2017_PZ2
         List<NodeEntity> nodeEnt = new List<NodeEntity>();
         List<SwitchEntity> swcEnt = new List<SwitchEntity>();
 
+        double[,] pointMatrix = new double[501, 501];
+
+        
+
         public MainWindow()
         {
             InitializeComponent();
@@ -68,9 +72,16 @@ namespace PR24_2017_PZ2
                 sub.X = double.Parse(node.SelectSingleNode("X").InnerText);
                 sub.Y = double.Parse(node.SelectSingleNode("Y").InnerText);
 
-
                 sub.X = CalculateXCoord(sub.X, minX, maxX);
                 sub.Y = CalculateYCoord(sub.Y, minY, maxY);
+
+                double newX, newY;
+
+                checkMatrix(sub.X, sub.Y, out newX, out newY);
+                sub.X = newX;
+                sub.Y = newY;
+
+                pointMatrix[(int)sub.X, (int)sub.Y] = 1;
 
                 subEnt.Add(sub);
                 
@@ -87,6 +98,14 @@ namespace PR24_2017_PZ2
 
                 nodeobj.X = CalculateXCoord(nodeobj.X, minX, maxX);
                 nodeobj.Y = CalculateYCoord(nodeobj.Y, minY, maxY);
+
+                double newX, newY;
+
+                checkMatrix(nodeobj.X, nodeobj.Y, out newX, out newY);
+                nodeobj.X = newX;
+                nodeobj.Y = newY;
+
+                pointMatrix[(int)nodeobj.X, (int)nodeobj.Y] = 1;
 
                 nodeEnt.Add(nodeobj);
 
@@ -105,8 +124,31 @@ namespace PR24_2017_PZ2
                 switchobj.X = CalculateXCoord(switchobj.X, minX, maxX);
                 switchobj.Y = CalculateYCoord(switchobj.Y, minY, maxY);
 
+                double newX, newY;
+
+                checkMatrix(switchobj.X, switchobj.Y, out newX, out newY);
+                switchobj.X = newX;
+                switchobj.Y = newY;
+
+                pointMatrix[(int)switchobj.X, (int)switchobj.Y] = 1;
+
                 swcEnt.Add(switchobj);
             }
+
+            int count = 0;
+
+
+            //provera da li su sve tacke rasporedjene, da slucajno nema preklapanja
+            /*foreach(double num in pointMatrix)
+            {
+                if(num == 1)
+                {
+                    count++;
+                }
+            }
+
+            int number = subEnt.Count + nodeEnt.Count + swcEnt.Count;
+            */
 
             DrawSubPoints();
             DrawNodPoints();
@@ -217,6 +259,8 @@ namespace PR24_2017_PZ2
 
         private void DrawSwcPoints()
         {
+            
+
             foreach (SwitchEntity sub in swcEnt)
             {
                 Ellipse circle = new Ellipse();
@@ -256,6 +300,49 @@ namespace PR24_2017_PZ2
             canvas.LayoutTransform = scale;
           
             e.Handled = true;
+        }
+
+        private void checkMatrix(double xx, double yy, out double newX, out double newY)
+        {
+            newX = xx;
+            newY = yy;
+
+
+            int oldx = (int)Math.Round(xx);
+            int oldy = (int)Math.Round(yy);
+
+            int x = (int)Math.Round(xx);
+            int y = (int)Math.Round(yy);
+
+            if(pointMatrix[x,y] == 0)
+            {
+                return;
+            }
+
+            int num = 1;
+
+            //pronaci najblize slobodno mesto, idem u krug oko pocetne tacke dok ne pronadjem najblizu slobodnu lokaciju
+             while(true)
+             {
+                for (y = oldy - num; y <= oldy + num; y++)
+                {
+                    for (x = oldx - num; x <= oldx + num; x++)
+                    {
+                        if (x >= 0 && x <= size && y >= 0 && y <= size) //provera da li je slobodna tacka u dozvoljenim okvirima
+                        {
+                            if (pointMatrix[x, y] == 0)
+                            {
+                                newX = x;
+                                newY = y;
+                                return;
+                            }
+                        }
+                    }
+                }
+                num = num + 1;
+             }
+
+            
         }
     }
 }
