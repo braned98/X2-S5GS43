@@ -200,6 +200,30 @@ namespace PR24_2017_PZ2
                     lineEnt.Remove(line.Id);
                 }
             }
+            count = 0;
+            List<LineEntity> lines = temp.Values.ToList();
+
+            foreach(LineEntity ln in lines)
+            {
+                int cnt = 0;
+                long id1 = ln.FirstEnd;
+                long id2 = ln.SecondEnd;
+
+                foreach(KeyValuePair<long, LineEntity> line in temp)
+                {
+                    if(line.Value.FirstEnd == id1 && line.Value.SecondEnd == id2)
+                    {
+                        cnt++;
+                        if(cnt > 1)
+                        {
+                            count++;
+                            lineEnt.Remove(line.Key);
+                        }
+                        
+                    }
+                }
+
+            }
             
         }
 
