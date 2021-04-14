@@ -29,14 +29,13 @@ namespace PR24_2017_PZ2
         double minX, maxX;
         double minY, maxY;
         int size = 500;       ///500x500
-        List<SubstationEntity> subEnt = new List<SubstationEntity>();
-        List<NodeEntity> nodeEnt = new List<NodeEntity>();
-        List<SwitchEntity> swcEnt = new List<SwitchEntity>();
+        Dictionary<long, SubstationEntity> subEnt = new Dictionary<long, SubstationEntity>();
+        Dictionary<long, NodeEntity> nodeEnt = new Dictionary<long, NodeEntity>();
+        Dictionary<long, SwitchEntity> swcEnt = new Dictionary<long, SwitchEntity>();
+        Dictionary<long, LineEntity> lineEnt = new Dictionary<long, LineEntity>();
 
         double[,] pointMatrix = new double[501, 501];
-
         
-
         public MainWindow()
         {
             InitializeComponent();
@@ -83,7 +82,7 @@ namespace PR24_2017_PZ2
 
                 pointMatrix[(int)sub.X, (int)sub.Y] = 1;
 
-                subEnt.Add(sub);
+                subEnt.Add(sub.Id, sub);
                 
             }
 
@@ -107,7 +106,7 @@ namespace PR24_2017_PZ2
 
                 pointMatrix[(int)nodeobj.X, (int)nodeobj.Y] = 1;
 
-                nodeEnt.Add(nodeobj);
+                nodeEnt.Add(nodeobj.Id, nodeobj);
 
             }
 
@@ -132,10 +131,10 @@ namespace PR24_2017_PZ2
 
                 pointMatrix[(int)switchobj.X, (int)switchobj.Y] = 1;
 
-                swcEnt.Add(switchobj);
+                swcEnt.Add(switchobj.Id, switchobj);
             }
 
-            int count = 0;
+            //int count = 0;
 
 
             //provera da li su sve tacke rasporedjene, da slucajno nema preklapanja
@@ -154,6 +153,54 @@ namespace PR24_2017_PZ2
             DrawNodPoints();
             DrawSwcPoints();
 
+
+
+            nodeList = xmlDoc.DocumentElement.SelectNodes("/NetworkModel/Lines/LineEntity");
+            foreach (XmlNode node in nodeList)
+            {
+                LineEntity l = new LineEntity();
+
+                l.Id = long.Parse(node.SelectSingleNode("Id").InnerText);
+                l.Name = node.SelectSingleNode("Name").InnerText;
+                if (node.SelectSingleNode("IsUnderground").InnerText.Equals("true"))
+                {
+                    l.IsUnderground = true;
+                }
+                else
+                {
+                    l.IsUnderground = false;
+                }
+                l.R = float.Parse(node.SelectSingleNode("R").InnerText);
+                l.ConductorMaterial = node.SelectSingleNode("ConductorMaterial").InnerText;
+                l.LineType = node.SelectSingleNode("LineType").InnerText;
+                l.ThermalConstantHeat = long.Parse(node.SelectSingleNode("ThermalConstantHeat").InnerText);
+                l.FirstEnd = long.Parse(node.SelectSingleNode("FirstEnd").InnerText);
+                l.SecondEnd = long.Parse(node.SelectSingleNode("SecondEnd").InnerText);
+
+                lineEnt.Add(l.Id, l);
+
+            }
+
+            int count = 0;
+
+            Dictionary<long, LineEntity> temp = new Dictionary<long, LineEntity>();
+            
+            foreach(LineEntity ln in lineEnt.Values)
+            {
+                temp.Add(ln.Id, ln);
+            }
+
+            foreach(LineEntity line in temp.Values)
+            {
+                if(!(subEnt.ContainsKey(line.FirstEnd) || nodeEnt.ContainsKey(line.FirstEnd)
+                   || swcEnt.ContainsKey(line.FirstEnd)) || !(subEnt.ContainsKey(line.SecondEnd) || nodeEnt.ContainsKey(line.SecondEnd)
+                   || swcEnt.ContainsKey(line.SecondEnd)))
+                {
+                    count++;
+                    lineEnt.Remove(line.Id);
+                }
+            }
+            
         }
 
 
@@ -227,7 +274,7 @@ namespace PR24_2017_PZ2
 
         private void DrawSubPoints()
         {
-            foreach(SubstationEntity sub in subEnt)
+            foreach(SubstationEntity sub in subEnt.Values)
             {
                 Ellipse circle = new Ellipse();
                 circle.Width = canvas.Width/size;
@@ -243,7 +290,7 @@ namespace PR24_2017_PZ2
 
         private void DrawNodPoints()
         {
-            foreach (NodeEntity sub in nodeEnt)
+            foreach (NodeEntity sub in nodeEnt.Values)
             {
                 Ellipse circle = new Ellipse();
                 circle.Width = canvas.Width / size;
@@ -261,7 +308,7 @@ namespace PR24_2017_PZ2
         {
             
 
-            foreach (SwitchEntity sub in swcEnt)
+            foreach (SwitchEntity sub in swcEnt.Values)
             {
                 Ellipse circle = new Ellipse();
                 circle.Width = canvas.Width / size;
