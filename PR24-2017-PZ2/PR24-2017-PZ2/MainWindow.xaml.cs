@@ -199,6 +199,7 @@ namespace PR24_2017_PZ2
                     count++;
                     lineEnt.Remove(line.Id);
                 }
+                
             }
             count = 0;
             List<LineEntity> lines = temp.Values.ToList();
@@ -211,11 +212,11 @@ namespace PR24_2017_PZ2
 
                 foreach(KeyValuePair<long, LineEntity> line in temp)
                 {
-                    if(line.Value.FirstEnd == id1 && line.Value.SecondEnd == id2)
+                    if((line.Value.FirstEnd == id1 && line.Value.SecondEnd == id2) || (line.Value.FirstEnd == id2 && line.Value.SecondEnd == id1))
                     {
                         cnt++;
-                        if(cnt > 1)
-                        {
+                        if(cnt > 1) //prvi slucaj gde postoje isti cvorovi moze da prodje, svaki naredni se brise jer je visak
+                        {           //"Treba ignorisati ponovno iscrtavanje vodova izmedju dva ista čvora."
                             count++;
                             lineEnt.Remove(line.Key);
                         }
@@ -224,10 +225,62 @@ namespace PR24_2017_PZ2
                 }
 
             }
+
+           /* foreach(LineEntity line in lineEnt.Values)
+            {
+                double x = 0;
+                double x2 = 0;
+                double y = 0;
+                double y2 = 0;
+                if (subEnt.ContainsKey(line.FirstEnd))
+                {
+                    x = subEnt[line.FirstEnd].X;
+                    y = subEnt[line.FirstEnd].Y;
+                }else if (nodeEnt.ContainsKey(line.FirstEnd))
+                {
+                    x = nodeEnt[line.FirstEnd].X;
+                    y = nodeEnt[line.FirstEnd].Y;
+                }
+                else
+                {
+                    x = swcEnt[line.FirstEnd].X;
+                    y = swcEnt[line.FirstEnd].Y;
+                }
+                if (subEnt.ContainsKey(line.SecondEnd))
+                {
+                    x2 = subEnt[line.SecondEnd].X;
+                    y2 = subEnt[line.SecondEnd].Y;
+                }
+                else if (nodeEnt.ContainsKey(line.SecondEnd))
+                {
+                    x2 = nodeEnt[line.SecondEnd].X;
+                    y2 = nodeEnt[line.SecondEnd].Y;
+                }
+                else 
+                {
+                    x2 = swcEnt[line.SecondEnd].X;
+                    y2 = swcEnt[line.SecondEnd].Y;
+                }
+
+                if(Math.Abs(x2 - x) <= 1 && Math.Abs(y2 - y) <= 1)
+                {
+                    if(line.FirstEnd == 40828 || line.SecondEnd == 40828)
+                    {
+
+                    }
+
+                }
+
+            }*/
+
+            BFS_Algorithm();
             
         }
 
+        private void BFS_Algorithm()
+        {
 
+        }
 
         private int CalculateXCoord(double x, double minX, double maxX)
         {
@@ -305,6 +358,8 @@ namespace PR24_2017_PZ2
                 circle.Height = canvas.Height/size;
                 circle.Fill = Brushes.Black;
 
+                circle.ToolTip = "Name: " + sub.Name + ", ID: " + sub.Id;
+
                 Canvas.SetLeft(circle, sub.X* (canvas.Width / size));
                 Canvas.SetTop(circle, sub.Y* (canvas.Height / size));
 
@@ -320,6 +375,8 @@ namespace PR24_2017_PZ2
                 circle.Width = canvas.Width / size;
                 circle.Height = canvas.Height / size;
                 circle.Fill = Brushes.Red;
+
+                circle.ToolTip = "Name: " + sub.Name + ", ID: " + sub.Id;
 
                 Canvas.SetLeft(circle, sub.X *(canvas.Width/size));
                 Canvas.SetTop(circle, sub.Y *(canvas.Height/size));
@@ -338,6 +395,8 @@ namespace PR24_2017_PZ2
                 circle.Width = canvas.Width / size;
                 circle.Height = canvas.Height / size;
                 circle.Fill = Brushes.Green;
+
+                circle.ToolTip = "Name: " + sub.Name + ", ID: " + sub.Id;
 
                 Canvas.SetLeft(circle, sub.X * (canvas.Width / size));
                 Canvas.SetTop(circle, sub.Y * (canvas.Height / size));
