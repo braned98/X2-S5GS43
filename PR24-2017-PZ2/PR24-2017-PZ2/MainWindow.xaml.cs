@@ -365,10 +365,11 @@ namespace PR24_2017_PZ2
                     while(destination.Parent != null)
                     {
                         Line ln = new Line();
-                        ln.X1 = destination.X * (canvas.Width / size);
-                        ln.Y1 = destination.Y * (canvas.Height / size);
-                        ln.X2 = destination.Parent.X * (canvas.Width / size);
-                        ln.Y2 = destination.Parent.Y * (canvas.Height / size);
+                        ln.X1 = (destination.X * (canvas.Width / size)) + (canvas.Width / (2*size));
+                        ln.Y1 = destination.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
+                        ln.X2 = destination.Parent.X * (canvas.Width / size) + (canvas.Width / (2 * size));
+                        ln.Y2 = destination.Parent.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
+                        pointMatrix[destination.X, destination.Y] = 2;
                         ln.Fill = Brushes.Blue;
                         ln.Stroke = Brushes.Blue;
                         ln.StrokeThickness = (canvas.Width/size)/5;
@@ -422,6 +423,9 @@ namespace PR24_2017_PZ2
 
         private void updateVisited(ref bool[,] visited)
         {
+            //ako je cvor ili linija na polju to smatram posecenim poljem, zato da linije ne idu kroz cvorove na pocetku bez potrebe
+            // i zato da iskoristim to za prvu iteraciju bfs algoritma koja ce nacrtati najblize putanje bez presecanja
+
             for (int k = 0; k < pointMatrix.GetLength(0); k++)
             {
                 for (int l = 0; l < pointMatrix.GetLength(1); l++)
@@ -509,15 +513,15 @@ namespace PR24_2017_PZ2
         {
             foreach(SubstationEntity sub in subEnt.Values)
             {
-                Ellipse circle = new Ellipse();
-                circle.Width = canvas.Width/size;
-                circle.Height = canvas.Height/size;
-                circle.Fill = Brushes.Black;
+                Ellipse circle = new Ellipse();         
+                circle.Width = (canvas.Width/size)*0.8; // smanjujem za 20%   ZBOG BOLJE PREGLEDNOSTI SAMIH TACAKA
+                circle.Height = (canvas.Height/size)*0.8;   //DA NE BUDU ZBIJENE JEDNA UZ DRUGU AKO SU JEDNA PORED DRUGE
+                circle.Fill = Brushes.Black;                                  
 
                 circle.ToolTip = "Name: " + sub.Name + ", ID: " + sub.Id;
 
-                Canvas.SetLeft(circle, sub.X* (canvas.Width / size));
-                Canvas.SetTop(circle, sub.Y* (canvas.Height / size));
+                Canvas.SetLeft(circle, sub.X* (canvas.Width / size) + 0.1 * (canvas.Width / size)); //pomeram za 10% po x osi
+                Canvas.SetTop(circle, sub.Y* (canvas.Height / size) + 0.1 * (canvas.Width / size)); //po y osi  DA BUDU U CENTRU PODEOKA
 
                 canvas.Children.Add(circle);
             }
@@ -528,14 +532,14 @@ namespace PR24_2017_PZ2
             foreach (NodeEntity sub in nodeEnt.Values)
             {
                 Ellipse circle = new Ellipse();
-                circle.Width = canvas.Width / size;
-                circle.Height = canvas.Height / size;
+                circle.Width = (canvas.Width / size) * 0.8;
+                circle.Height = (canvas.Height / size) * 0.8;
                 circle.Fill = Brushes.Red;
 
                 circle.ToolTip = "Name: " + sub.Name + ", ID: " + sub.Id;
 
-                Canvas.SetLeft(circle, sub.X *(canvas.Width/size));
-                Canvas.SetTop(circle, sub.Y *(canvas.Height/size));
+                Canvas.SetLeft(circle, sub.X *(canvas.Width/size) + 0.1 * (canvas.Width / size));
+                Canvas.SetTop(circle, sub.Y *(canvas.Height/size) + 0.1 * (canvas.Width / size));
 
                 canvas.Children.Add(circle);
             }
@@ -548,14 +552,14 @@ namespace PR24_2017_PZ2
             foreach (SwitchEntity sub in swcEnt.Values)
             {
                 Ellipse circle = new Ellipse();
-                circle.Width = canvas.Width / size;
-                circle.Height = canvas.Height / size;
+                circle.Width = (canvas.Width / size) * 0.8;
+                circle.Height = (canvas.Height / size) * 0.8;
                 circle.Fill = Brushes.Green;
 
                 circle.ToolTip = "Name: " + sub.Name + ", ID: " + sub.Id;
 
-                Canvas.SetLeft(circle, sub.X * (canvas.Width / size));
-                Canvas.SetTop(circle, sub.Y * (canvas.Height / size));
+                Canvas.SetLeft(circle, sub.X * (canvas.Width / size) + 0.1 * (canvas.Width / size));
+                Canvas.SetTop(circle, sub.Y * (canvas.Height / size) + 0.1 * (canvas.Width / size));
 
                 canvas.Children.Add(circle);
             }
