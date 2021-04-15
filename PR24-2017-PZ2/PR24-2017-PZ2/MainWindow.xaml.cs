@@ -138,6 +138,7 @@ namespace PR24_2017_PZ2
 
 
             //provera da li su sve tacke rasporedjene, da slucajno nema preklapanja
+            //uporedio sam broj cvorova u kolekcijama cvorova(toliko treba da bude i u matrici tj. na canvasu posle) i broj cvorova u matrici
             /*foreach(double num in pointMatrix)
             {
                 if(num == 1)
@@ -226,52 +227,56 @@ namespace PR24_2017_PZ2
 
             }
 
-           /* foreach(LineEntity line in lineEnt.Values)
-            {
-                double x = 0;
-                double x2 = 0;
-                double y = 0;
-                double y2 = 0;
-                if (subEnt.ContainsKey(line.FirstEnd))
-                {
-                    x = subEnt[line.FirstEnd].X;
-                    y = subEnt[line.FirstEnd].Y;
-                }else if (nodeEnt.ContainsKey(line.FirstEnd))
-                {
-                    x = nodeEnt[line.FirstEnd].X;
-                    y = nodeEnt[line.FirstEnd].Y;
-                }
-                else
-                {
-                    x = swcEnt[line.FirstEnd].X;
-                    y = swcEnt[line.FirstEnd].Y;
-                }
-                if (subEnt.ContainsKey(line.SecondEnd))
-                {
-                    x2 = subEnt[line.SecondEnd].X;
-                    y2 = subEnt[line.SecondEnd].Y;
-                }
-                else if (nodeEnt.ContainsKey(line.SecondEnd))
-                {
-                    x2 = nodeEnt[line.SecondEnd].X;
-                    y2 = nodeEnt[line.SecondEnd].Y;
-                }
-                else 
-                {
-                    x2 = swcEnt[line.SecondEnd].X;
-                    y2 = swcEnt[line.SecondEnd].Y;
-                }
 
-                if(Math.Abs(x2 - x) <= 1 && Math.Abs(y2 - y) <= 1)
-                {
-                    if(line.FirstEnd == 40828 || line.SecondEnd == 40828)
-                    {
+            //ovo sam koristio da nadjem odgovarajuce cvorove za pocetak bfs algoritma, neka dva koja su najblize jedan drugom
+            //"Algoritam započeti od neka dva čvora koja imaju najmanju udaljenost na gridu. Naći ih automatski ili ručno."
 
-                    }
+            /* foreach(LineEntity line in lineEnt.Values)
+             {
+                 double x = 0;
+                 double x2 = 0;
+                 double y = 0;
+                 double y2 = 0;
+                 if (subEnt.ContainsKey(line.FirstEnd))
+                 {
+                     x = subEnt[line.FirstEnd].X;
+                     y = subEnt[line.FirstEnd].Y;
+                 }else if (nodeEnt.ContainsKey(line.FirstEnd))
+                 {
+                     x = nodeEnt[line.FirstEnd].X;
+                     y = nodeEnt[line.FirstEnd].Y;
+                 }
+                 else
+                 {
+                     x = swcEnt[line.FirstEnd].X;
+                     y = swcEnt[line.FirstEnd].Y;
+                 }
+                 if (subEnt.ContainsKey(line.SecondEnd))
+                 {
+                     x2 = subEnt[line.SecondEnd].X;
+                     y2 = subEnt[line.SecondEnd].Y;
+                 }
+                 else if (nodeEnt.ContainsKey(line.SecondEnd))
+                 {
+                     x2 = nodeEnt[line.SecondEnd].X;
+                     y2 = nodeEnt[line.SecondEnd].Y;
+                 }
+                 else 
+                 {
+                     x2 = swcEnt[line.SecondEnd].X;
+                     y2 = swcEnt[line.SecondEnd].Y;
+                 }
 
-                }
+                 if(Math.Abs(x2 - x) <= 1 && Math.Abs(y2 - y) <= 1)
+                 {
+                     if(line.FirstEnd == 40828 || line.SecondEnd == 40828)
+                     {
 
-            }*/
+                     }
+
+                 }
+
+             }*/
 
             BFS_Algorithm();
             
@@ -303,8 +308,8 @@ namespace PR24_2017_PZ2
                 int x2 = getX(line.SecondEnd);
                 int y2 = getY(line.SecondEnd);
 
-                pointMatrix[(int)x2, (int)y2] = 3;
-                visited[(int)x2, (int)y2] = false;
+                pointMatrix[(int)x2, (int)y2] = 3;  //stavljam vrednost odredista u matrici na 3 kako bi ga algoritam jednostavnije prepoznao
+                visited[(int)x2, (int)y2] = false;          //kasnije cu ga vratiti opet na 1, (1 su svi cvorovi, 2 su linije)
 
                 Node source = new Node(x, y);
                 Node destination = null;
@@ -321,8 +326,8 @@ namespace PR24_2017_PZ2
                         break;
                     }
 
-
-                    if(node.Y - 1 > 0 && visited[node.X, node.Y - 1] == false)
+                                                                                
+                    if(node.Y - 1 > 0 && visited[node.X, node.Y - 1] == false) //proveravam susedno polje iznad
                     {
                         Node nNode = new Node(node.X, node.Y - 1);
                         nNode.Parent = node;
@@ -330,7 +335,7 @@ namespace PR24_2017_PZ2
                         visited[nNode.X, nNode.Y] = true;
                     }
 
-                    if (node.Y + 1 < 501 && visited[node.X, node.Y + 1] == false)
+                    if (node.Y + 1 < 501 && visited[node.X, node.Y + 1] == false) //susedno polje ispod
                     {
                         Node nNode = new Node(node.X, node.Y + 1);
                         nNode.Parent = node;
@@ -338,7 +343,7 @@ namespace PR24_2017_PZ2
                         visited[nNode.X, nNode.Y] = true;
                     }
 
-                    if (node.X - 1 > 0 && visited[node.X - 1, node.Y] == false)
+                    if (node.X - 1 > 0 && visited[node.X - 1, node.Y] == false) //susedno polje levo
                     {
                         Node nNode = new Node(node.X - 1, node.Y);
                         nNode.Parent = node;
@@ -346,7 +351,7 @@ namespace PR24_2017_PZ2
                         visited[nNode.X, nNode.Y] = true;
                     }
 
-                    if (node.X + 1 < 501 && visited[node.X + 1, node.Y] == false)
+                    if (node.X + 1 < 501 && visited[node.X + 1, node.Y] == false) //susedno polje desno
                     {
                         Node nNode = new Node(node.X + 1, node.Y);
                         nNode.Parent = node;
@@ -357,13 +362,12 @@ namespace PR24_2017_PZ2
 
                 }
                 pointMatrix[(int)x2, (int)y2] = 1;
-                updateVisited(ref visited);
 
-                if(destination != null)
+                if(destination != null)  //ako je destinacija != null, onda je algoritam nasao put do odredisnog cvora
                 {
 
-                    while(destination.Parent != null)
-                    {
+                    while(destination.Parent != null) //vracam se do izvora tako sto pratim roditelje svakog cvora i iscrtavam liniju do njega
+                    {                                 //izvor nema roditeljski cvor(logicno) pa se kod njega iteracija zavrsava, sto je super
                         Line ln = new Line();
                         ln.X1 = (destination.X * (canvas.Width / size)) + (canvas.Width / (2*size));
                         ln.Y1 = destination.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
@@ -379,6 +383,8 @@ namespace PR24_2017_PZ2
                     
 
                 }
+                updateVisited(ref visited);
+
 
 
 
@@ -391,7 +397,8 @@ namespace PR24_2017_PZ2
         }
 
         private int getX(long id)
-        {
+        { 
+
             if (subEnt.ContainsKey(id))
             {
                 return (int)subEnt[id].X;
@@ -425,7 +432,9 @@ namespace PR24_2017_PZ2
         {
             //ako je cvor ili linija na polju to smatram posecenim poljem, zato da linije ne idu kroz cvorove na pocetku bez potrebe
             // i zato da iskoristim to za prvu iteraciju bfs algoritma koja ce nacrtati najblize putanje bez presecanja
-
+            // cvorovi u matrici su mi vrednosti 1
+            // linije su vrednosti 2
+            
             for (int k = 0; k < pointMatrix.GetLength(0); k++)
             {
                 for (int l = 0; l < pointMatrix.GetLength(1); l++)
@@ -479,6 +488,7 @@ namespace PR24_2017_PZ2
 
         private void findMaxMin(XmlNodeList nodeList)
         {
+            //max i min za potrebe aproksimacije
             SubstationEntity sub = new SubstationEntity();
 
             foreach (XmlNode node in nodeList)
@@ -619,7 +629,7 @@ namespace PR24_2017_PZ2
                     for (x = oldx - num; x <= oldx + num; x++)
                     {
                         if (x >= 0 && x <= size && y >= 0 && y <= size) //provera da li je slobodna tacka u dozvoljenim okvirima
-                        {
+                        {                                               //ako nije trazim prvu narednu koja ce biti validna
                             if (pointMatrix[x, y] == 0)
                             {
                                 newX = x;
