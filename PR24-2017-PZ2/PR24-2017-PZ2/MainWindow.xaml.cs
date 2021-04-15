@@ -279,7 +279,163 @@ namespace PR24_2017_PZ2
 
         private void BFS_Algorithm()
         {
+            bool[,] visited = new bool[501, 501];
 
+            updateVisited(ref visited);
+
+            LineEntity firstLine = new LineEntity();
+            if (lineEnt.ContainsKey(35370))
+            {
+                firstLine = lineEnt[35370];
+            }
+            List<LineEntity> lines = lineEnt.Values.ToList();
+            lines.Remove(firstLine);
+            lines.Insert(0, firstLine);
+            
+            
+            foreach(LineEntity line in lines)
+            {
+                Queue<Node> qNodes = new Queue<Node>();
+           
+                int x = getX(line.FirstEnd);
+                int y = getY(line.FirstEnd);
+
+                int x2 = getX(line.SecondEnd);
+                int y2 = getY(line.SecondEnd);
+
+                pointMatrix[(int)x2, (int)y2] = 3;
+                visited[(int)x2, (int)y2] = false;
+
+                Node source = new Node(x, y);
+                Node destination = null;
+
+                qNodes.Enqueue(source);
+
+                while(qNodes.Count > 0)
+                {
+                    Node node = qNodes.Dequeue();
+
+                    if(pointMatrix[node.X, node.Y] == 3)
+                    {
+                        destination = node;
+                        break;
+                    }
+
+
+                    if(node.Y - 1 > 0 && visited[node.X, node.Y - 1] == false)
+                    {
+                        Node nNode = new Node(node.X, node.Y - 1);
+                        nNode.Parent = node;
+                        qNodes.Enqueue(nNode);
+                        visited[nNode.X, nNode.Y] = true;
+                    }
+
+                    if (node.Y + 1 < 501 && visited[node.X, node.Y + 1] == false)
+                    {
+                        Node nNode = new Node(node.X, node.Y + 1);
+                        nNode.Parent = node;
+                        qNodes.Enqueue(nNode);
+                        visited[nNode.X, nNode.Y] = true;
+                    }
+
+                    if (node.X - 1 > 0 && visited[node.X - 1, node.Y] == false)
+                    {
+                        Node nNode = new Node(node.X - 1, node.Y);
+                        nNode.Parent = node;
+                        qNodes.Enqueue(nNode);
+                        visited[nNode.X, nNode.Y] = true;
+                    }
+
+                    if (node.X + 1 < 501 && visited[node.X + 1, node.Y] == false)
+                    {
+                        Node nNode = new Node(node.X + 1, node.Y);
+                        nNode.Parent = node;
+                        qNodes.Enqueue(nNode);
+                        visited[nNode.X, nNode.Y] = true;
+                    }
+                    
+
+                }
+                pointMatrix[(int)x2, (int)y2] = 1;
+                updateVisited(ref visited);
+
+                if(destination != null)
+                {
+
+                    while(destination.Parent != null)
+                    {
+                        Line ln = new Line();
+                        ln.X1 = destination.X * (canvas.Width / size);
+                        ln.Y1 = destination.Y * (canvas.Height / size);
+                        ln.X2 = destination.Parent.X * (canvas.Width / size);
+                        ln.Y2 = destination.Parent.Y * (canvas.Height / size);
+                        ln.Fill = Brushes.Blue;
+                        ln.Stroke = Brushes.Blue;
+                        ln.StrokeThickness = (canvas.Width/size)/5;
+                        canvas.Children.Add(ln);
+                        destination = destination.Parent;
+                    }
+                    
+
+                }
+
+
+
+            }
+
+
+
+
+
+        }
+
+        private int getX(long id)
+        {
+            if (subEnt.ContainsKey(id))
+            {
+                return (int)subEnt[id].X;
+            }else if (nodeEnt.ContainsKey(id))
+            {
+                return (int)nodeEnt[id].X;
+            }
+            else
+            {
+                return (int)swcEnt[id].X;
+            }
+        }
+
+        private int getY(long id)
+        {
+            if (subEnt.ContainsKey(id))
+            {
+                return (int)subEnt[id].Y;
+            }
+            else if (nodeEnt.ContainsKey(id))
+            {
+                return (int)nodeEnt[id].Y;
+            }
+            else
+            {
+                return (int)swcEnt[id].Y;
+            }
+        }
+
+        private void updateVisited(ref bool[,] visited)
+        {
+            for (int k = 0; k < pointMatrix.GetLength(0); k++)
+            {
+                for (int l = 0; l < pointMatrix.GetLength(1); l++)
+                {
+                    if (pointMatrix[k, l] == 0)
+                    {
+                        visited[k, l] = false;
+                    }
+                    else
+                    {
+                        visited[k, l] = true;
+                    }
+                }
+            }
         }
 
         private int CalculateXCoord(double x, double minX, double maxX)
