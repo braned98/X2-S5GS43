@@ -33,6 +33,11 @@ namespace PR24_2017_PZ2
         Dictionary<long, NodeEntity> nodeEnt = new Dictionary<long, NodeEntity>();
         Dictionary<long, SwitchEntity> swcEnt = new Dictionary<long, SwitchEntity>();
         Dictionary<long, LineEntity> lineEnt = new Dictionary<long, LineEntity>();
+        List<LineEntity> lines = new List<LineEntity>();
+        List<Line> drawnLines = new List<Line>();
+
+        int numLn = 0;
+   
 
         double[,] pointMatrix = new double[501, 501];
         
@@ -279,6 +284,7 @@ namespace PR24_2017_PZ2
              }*/
 
             BFS_Algorithm();
+            BFS_Algorithm2();
             
         }
 
@@ -293,10 +299,11 @@ namespace PR24_2017_PZ2
             {
                 firstLine = lineEnt[35370];
             }
-            List<LineEntity> lines = lineEnt.Values.ToList();
+            lines = lineEnt.Values.ToList();
             lines.Remove(firstLine);
             lines.Insert(0, firstLine);
-            
+
+            List<LineEntity> deleteLines = new List<LineEntity>();
             
             foreach(LineEntity line in lines)
             {
@@ -373,6 +380,7 @@ namespace PR24_2017_PZ2
                         ln.Y1 = destination.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
                         ln.X2 = destination.Parent.X * (canvas.Width / size) + (canvas.Width / (2 * size));
                         ln.Y2 = destination.Parent.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
+                        drawnLines.Add(ln);
                         pointMatrix[destination.X, destination.Y] = 2;
                         ln.Fill = Brushes.Blue;
                         ln.Stroke = Brushes.Blue;
@@ -382,21 +390,121 @@ namespace PR24_2017_PZ2
                         canvas.Children.Add(ln);
                         destination = destination.Parent;
                     }
-                    
+                    deleteLines.Add(line);
 
                 }
                 updateVisited(ref visited);
-
-
-
-
+                
             }
 
-
-
-
-
+            foreach(LineEntity ln in deleteLines)  //brisem sve linije koje sam uspeo nacrtati bez presecanja
+            {                                      //ostatak linija ce proci kroz drugi deo bfs algoritma
+                lines.Remove(ln);
+            }
+            
         }
+        
+        //BFS sa presecanjima
+        private void BFS_Algorithm2()
+        {
+            bool[,] visited = new bool[501, 501];
+
+            updateVisited2(ref visited);
+            
+            
+            foreach (LineEntity line in lines)
+            {
+                Queue<Node> qNodes = new Queue<Node>();
+
+                int x = getX(line.FirstEnd);
+                int y = getY(line.FirstEnd);
+
+                int x2 = getX(line.SecondEnd);
+                int y2 = getY(line.SecondEnd);
+
+                pointMatrix[(int)x2, (int)y2] = 3;  //stavljam vrednost odredista u matrici na 3 kako bi ga algoritam jednostavnije prepoznao
+                visited[(int)x2, (int)y2] = false;          //kasnije cu ga vratiti opet na 1, (1 su svi cvorovi, 2 su linije)
+
+                Node source = new Node(x, y);
+                Node destination = null;
+
+                qNodes.Enqueue(source);
+
+                while (qNodes.Count > 0)
+                {
+                    Node node = qNodes.Dequeue();
+
+                    if (pointMatrix[node.X, node.Y] == 3)
+                    {
+                        destination = node;
+                        break;
+                    }
+
+
+                    if (node.Y - 1 > 0 && visited[node.X, node.Y - 1] == false) //proveravam susedno polje iznad
+                    {
+                        Node nNode = new Node(node.X, node.Y - 1);
+                        nNode.Parent = node;
+                        qNodes.Enqueue(nNode);
+                        visited[nNode.X, nNode.Y] = true;
+                    }
+
+                    if (node.Y + 1 < 501 && visited[node.X, node.Y + 1] == false) //susedno polje ispod
+                    {
+                        Node nNode = new Node(node.X, node.Y + 1);
+                        nNode.Parent = node;
+                        qNodes.Enqueue(nNode);
+                        visited[nNode.X, nNode.Y] = true;
+                    }
+
+                    if (node.X - 1 > 0 && visited[node.X - 1, node.Y] == false) //susedno polje levo
+                    {
+                        Node nNode = new Node(node.X - 1, node.Y);
+                        nNode.Parent = node;
+                        qNodes.Enqueue(nNode);
+                        visited[nNode.X, nNode.Y] = true;
+                    }
+
+                    if (node.X + 1 < 501 && visited[node.X + 1, node.Y] == false) //susedno polje desno
+                    {
+                        Node nNode = new Node(node.X + 1, node.Y);
+                        nNode.Parent = node;
+                        qNodes.Enqueue(nNode);
+                        visited[nNode.X, nNode.Y] = true;
+                    }
+
+
+                }
+                pointMatrix[(int)x2, (int)y2] = 1;
+
+                if (destination != null)  //ako je destinacija != null, onda je algoritam nasao put do odredisnog cvora
+                {
+
+                    List<Line> completeLine = new List<Line>();
+
+                    while (destination.Parent != null) //vracam se do izvora tako sto pratim roditelje svakog cvora i iscrtavam liniju do njega
+                    {                                 //izvor nema roditeljski cvor(logicno) pa se kod njega iteracija zavrsava, sto je super
+                        Line ln = new Line();
+                        ln.X1 = (destination.X * (canvas.Width / size)) + (canvas.Width / (2 * size));
+                        ln.Y1 = destination.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
+                        ln.X2 = destination.Parent.X * (canvas.Width / size) + (canvas.Width / (2 * size));
+                        ln.Y2 = destination.Parent.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
+                        pointMatrix[destination.X, destination.Y] = 2;
+                        ln.Fill = Brushes.Blue;
+                        ln.Stroke = Brushes.Blue;
+                        ln.StrokeThickness = (canvas.Width / size) / 5;
+                        ln.Uid = line.Id.ToString() + ":" + line.FirstEnd.ToString() + ":" + line.SecondEnd.ToString();
+                        ln.ToolTip = "Name: " + line.Name + ", ID: " + line.Id;
+                        canvas.Children.Add(ln);
+                        completeLine.Add(ln);
+                        destination = destination.Parent;
+                    }
+                }
+                updateVisited2(ref visited);
+            }
+        }
+        
+
 
         private int getX(long id)
         { 
@@ -442,6 +550,24 @@ namespace PR24_2017_PZ2
                 for (int l = 0; l < pointMatrix.GetLength(1); l++)
                 {
                     if (pointMatrix[k, l] == 0)
+                    {
+                        visited[k, l] = false;
+                    }
+                    else
+                    {
+                        visited[k, l] = true;
+                    }
+                }
+            }
+        }
+
+        private void updateVisited2(ref bool[,] visited)
+        {
+            for (int k = 0; k < pointMatrix.GetLength(0); k++)
+            {
+                for (int l = 0; l < pointMatrix.GetLength(1); l++)
+                {
+                    if (pointMatrix[k, l] == 0 || pointMatrix[k, l] == 2)  //u drugoj iteraciji moze da se preseca pa vod nije prepreka
                     {
                         visited[k, l] = false;
                     }
