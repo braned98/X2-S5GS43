@@ -12,7 +12,7 @@
 
     <Grid>
         <ScrollViewer CanContentScroll="True" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
-            <Canvas Name="canvas" Width="600" Height="600" MouseWheel="MouseWheelZoom" Background="Transparent" Margin="0,0,0,0">
+            <Canvas Name="canvas" Width="600" Height="600" MouseWheel="MouseWheelZoom" Background="Transparent" Margin="0,0,0,0" MouseRightButtonDown="Right_Click">
 
             </Canvas>
         </ScrollViewer>

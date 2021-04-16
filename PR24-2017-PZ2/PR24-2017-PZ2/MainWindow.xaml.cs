@@ -377,6 +377,8 @@ namespace PR24_2017_PZ2
                         ln.Fill = Brushes.Blue;
                         ln.Stroke = Brushes.Blue;
                         ln.StrokeThickness = (canvas.Width/size)/5;
+                        ln.Uid = line.Id.ToString() + ":" + line.FirstEnd.ToString() + ":" + line.SecondEnd.ToString();
+                        ln.ToolTip = "Name: " + line.Name + ", ID: " + line.Id;
                         canvas.Children.Add(ln);
                         destination = destination.Parent;
                     }
@@ -526,8 +528,8 @@ namespace PR24_2017_PZ2
                 Ellipse circle = new Ellipse();         
                 circle.Width = (canvas.Width/size)*0.8; // smanjujem za 20%   ZBOG BOLJE PREGLEDNOSTI SAMIH TACAKA
                 circle.Height = (canvas.Height/size)*0.8;   //DA NE BUDU ZBIJENE JEDNA UZ DRUGU AKO SU JEDNA PORED DRUGE
-                circle.Fill = Brushes.Black;                                  
-
+                circle.Fill = Brushes.Black;
+                circle.Uid = sub.Id.ToString();             //ID da kasnije lakse nadjem cvor na kanvasu i menjam mu boju
                 circle.ToolTip = "Name: " + sub.Name + ", ID: " + sub.Id;
 
                 Canvas.SetLeft(circle, sub.X* (canvas.Width / size) + 0.1 * (canvas.Width / size)); //pomeram za 10% po x osi
@@ -545,7 +547,7 @@ namespace PR24_2017_PZ2
                 circle.Width = (canvas.Width / size) * 0.8;
                 circle.Height = (canvas.Height / size) * 0.8;
                 circle.Fill = Brushes.Red;
-
+                circle.Uid = sub.Id.ToString();
                 circle.ToolTip = "Name: " + sub.Name + ", ID: " + sub.Id;
 
                 Canvas.SetLeft(circle, sub.X *(canvas.Width/size) + 0.1 * (canvas.Width / size));
@@ -565,7 +567,7 @@ namespace PR24_2017_PZ2
                 circle.Width = (canvas.Width / size) * 0.8;
                 circle.Height = (canvas.Height / size) * 0.8;
                 circle.Fill = Brushes.Green;
-
+                circle.Uid = sub.Id.ToString();                      
                 circle.ToolTip = "Name: " + sub.Name + ", ID: " + sub.Id;
 
                 Canvas.SetLeft(circle, sub.X * (canvas.Width / size) + 0.1 * (canvas.Width / size));
@@ -575,6 +577,17 @@ namespace PR24_2017_PZ2
             }
         }
 
+        private void Right_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (e.OriginalSource.GetType() == typeof(Line))
+            {
+                NodeColorWin window = new NodeColorWin(e.OriginalSource);
+
+                window.Owner = this;
+                window.ShowDialog();
+
+            }
+        }
 
         private void MouseWheelZoom(object sender, MouseWheelEventArgs e)
         {
