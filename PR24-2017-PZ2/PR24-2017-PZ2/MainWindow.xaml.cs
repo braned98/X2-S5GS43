@@ -510,9 +510,9 @@ namespace PR24_2017_PZ2
                         completeLine.Add(ln);
                         drawnLines.Add(ln);
 
-                        if(pointMatrix[destination.X, destination.Y] == 2)
+                        if(pointMatrix[destination.X, destination.Y] == 2) //ako je tu vec linija, mozda dode do presecanja
                         {
-                            if (checkLine())
+                            if (checkLine())  //idem proveriti da li ima presecanja, ako ima na taj podeok u matrici stavljam 5   
                             {
                                 pointMatrix[destination.X, destination.Y] = 5;
                             }
@@ -559,12 +559,15 @@ namespace PR24_2017_PZ2
             }
         }
 
-        private bool checkLine()
+        private bool checkLine() //u specifikaciji pise da oznacim tacke preseka
+                                 //jedino mi je logicno da oznacim kada se dve linije bukvalno presecaju
+                                 //nekad ce se linije naci u istom podeoku, ali se mogu mimoici bez presecanja i taj slucaj necu oznaciti kao presecanje
+                                 //jedini slucaj koji gledam je kada bukvalno dve linije prelaze jedna preko druge sto mi je i logicno i takvih slucajeva ima mnogo
         {
             Line line2 = drawnLines[drawnLines.Count - 1];
             Line line1 = drawnLines[drawnLines.Count - 2];
 
-            if(line1.X1 != line2.X2 && line1.Y1 != line2.Y2)        //Linija skrece i nema presecanja, moze samo biti mimoilazenja
+            if(line1.X1 != line2.X2 && line1.Y1 != line2.Y2)        //Linija koja se trenutno iscrtava skrece i nema presecanja, moze samo biti mimoilazenja
             {
                 return false;
             }
@@ -580,35 +583,20 @@ namespace PR24_2017_PZ2
                     Line line3 = drawnLines[i];
                     Line line4 = drawnLines[i + 1];
 
-                    if (line3.X1 != line4.X2 && line3.Y1 != line4.Y2)        //Linija skrece i nema presecanja, moze samo biti mimoilazenja
+                    if (line3.X1 != line4.X2 && line3.Y1 != line4.Y2)  //Linija koja je vec tu iscrtana pre skrece i nema presecanja, moze samo biti mimoilazenja
                     {
                         return false;
                     }
 
-                    if(line2.X2 != line4.X2 && line2.Y2 != line4.Y2)
+                    if(line2.X2 != line4.X2 && line2.Y2 != line4.Y2)      //Doslo je do presecanja!
                     {
-                        //DrawSymbol(line3.X2, line3.Y2);
-                        return true;
-                    }
+                        return true;                                      //vracam true i sada ce u matrici ovaj podeok imati vrednost 5
+                    }                                                     //na tom mestu u canvasu ce se iscrtati kvadrat sa crvenim rubom
                 }
             }
             return false;
         }
-
-        private void DrawSymbol(double x, double y)
-        {
-            Rectangle rect = new Rectangle();
-            rect.Width = (canvas.Width / size) * 0.6;
-            rect.Height = (canvas.Height / size) * 0.6;
-            rect.Fill = Brushes.Transparent;
-            rect.Stroke = Brushes.Red;
-            rect.StrokeThickness = rect.Width / 5;
-
-            Canvas.SetLeft(rect, x - (canvas.Width/size)*0.3);
-            Canvas.SetTop(rect, y - (canvas.Height/size)*0.3);
-
-            canvas.Children.Add(rect);
-        }
+        
 
         private int getX(long id)
         { 
