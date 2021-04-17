@@ -37,6 +37,7 @@ namespace PR24_2017_PZ2
         List<Line> drawnLines = new List<Line>();
 
         int numLn = 0;
+        int cnt = 0;
    
 
         double[,] pointMatrix = new double[501, 501];
@@ -372,16 +373,20 @@ namespace PR24_2017_PZ2
 
                 if(destination != null)  //ako je destinacija != null, onda je algoritam nasao put do odredisnog cvora
                 {
+                    bool isFirst = true;
 
-                    while(destination.Parent != null) //vracam se do izvora tako sto pratim roditelje svakog cvora i iscrtavam liniju do njega
+                    while (destination.Parent != null) //vracam se do izvora tako sto pratim roditelje svakog cvora i iscrtavam liniju do njega
                     {                                 //izvor nema roditeljski cvor(logicno) pa se kod njega iteracija zavrsava, sto je super
                         Line ln = new Line();
                         ln.X1 = (destination.X * (canvas.Width / size)) + (canvas.Width / (2*size));
                         ln.Y1 = destination.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
                         ln.X2 = destination.Parent.X * (canvas.Width / size) + (canvas.Width / (2 * size));
                         ln.Y2 = destination.Parent.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
-                        drawnLines.Add(ln);
-                        pointMatrix[destination.X, destination.Y] = 2;
+                        //pointMatrix[destination.X, destination.Y] = 2;
+                        if ((pointMatrix[destination.X, destination.Y] == 0))
+                        {
+                            pointMatrix[destination.X, destination.Y] = 2;
+                        }
                         ln.Fill = Brushes.Blue;
                         ln.Stroke = Brushes.Blue;
                         ln.StrokeThickness = (canvas.Width/size)/5;
@@ -389,6 +394,9 @@ namespace PR24_2017_PZ2
                         ln.ToolTip = "Name: " + line.Name + ", ID: " + line.Id;
                         canvas.Children.Add(ln);
                         destination = destination.Parent;
+                        drawnLines.Add(ln);
+                       
+                        //isFirst = false;
                     }
                     deleteLines.Add(line);
 
@@ -481,6 +489,9 @@ namespace PR24_2017_PZ2
                 {
 
                     List<Line> completeLine = new List<Line>();
+                    
+                    bool isLine = false;
+                    bool isFirst = true;
 
                     while (destination.Parent != null) //vracam se do izvora tako sto pratim roditelje svakog cvora i iscrtavam liniju do njega
                     {                                 //izvor nema roditeljski cvor(logicno) pa se kod njega iteracija zavrsava, sto je super
@@ -489,7 +500,7 @@ namespace PR24_2017_PZ2
                         ln.Y1 = destination.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
                         ln.X2 = destination.Parent.X * (canvas.Width / size) + (canvas.Width / (2 * size));
                         ln.Y2 = destination.Parent.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
-                        pointMatrix[destination.X, destination.Y] = 2;
+                        //pointMatrix[destination.X, destination.Y] = 2;
                         ln.Fill = Brushes.Blue;
                         ln.Stroke = Brushes.Blue;
                         ln.StrokeThickness = (canvas.Width / size) / 5;
@@ -497,14 +508,107 @@ namespace PR24_2017_PZ2
                         ln.ToolTip = "Name: " + line.Name + ", ID: " + line.Id;
                         canvas.Children.Add(ln);
                         completeLine.Add(ln);
+                        drawnLines.Add(ln);
+
+                        if(pointMatrix[destination.X, destination.Y] == 2)
+                        {
+                            if (checkLine())
+                            {
+                                pointMatrix[destination.X, destination.Y] = 5;
+                            }
+                        }
+
+                        if ((pointMatrix[destination.X, destination.Y] == 0))
+                        {
+                            pointMatrix[destination.X, destination.Y] = 2;
+                        }
                         destination = destination.Parent;
+
+                       
                     }
                 }
                 updateVisited2(ref visited);
             }
+            checkAll();
         }
         
+        private void checkAll()
+        {
+            for (int k = 0; k < pointMatrix.GetLength(0); k++)
+            {
+                for (int l = 0; l < pointMatrix.GetLength(1); l++)
+                {
+                    if (pointMatrix[k, l] == 5)
+                    {
+                        double x = k * (canvas.Width / size);
+                        double y = l * (canvas.Height / size);
 
+                        Rectangle rect = new Rectangle();
+                        rect.Width = (canvas.Width / size) * 0.6;
+                        rect.Height = (canvas.Height / size) * 0.6;
+                        rect.Fill = Brushes.Transparent;
+                        rect.Stroke = Brushes.Red;
+                        rect.StrokeThickness = rect.Width / 5;
+
+                        Canvas.SetLeft(rect, x + (canvas.Width / size) * 0.2);
+                        Canvas.SetTop(rect, y + (canvas.Height / size) * 0.2);
+
+                        canvas.Children.Add(rect);
+                    }
+                }
+            }
+        }
+
+        private bool checkLine()
+        {
+            Line line2 = drawnLines[drawnLines.Count - 1];
+            Line line1 = drawnLines[drawnLines.Count - 2];
+
+            if(line1.X1 != line2.X2 && line1.Y1 != line2.Y2)        //Linija skrece i nema presecanja, moze samo biti mimoilazenja
+            {
+                return false;
+            }
+
+            for(int i=0; i < drawnLines.Count-3; i++)
+            {
+                if(drawnLines[i].X2 == line2.X1 && drawnLines[i].Y2 == line2.Y1)
+                {
+                    string lineID = drawnLines[i].Uid.Split(':')[0];
+
+                   
+
+                    Line line3 = drawnLines[i];
+                    Line line4 = drawnLines[i + 1];
+
+                    if (line3.X1 != line4.X2 && line3.Y1 != line4.Y2)        //Linija skrece i nema presecanja, moze samo biti mimoilazenja
+                    {
+                        return false;
+                    }
+
+                    if(line2.X2 != line4.X2 && line2.Y2 != line4.Y2)
+                    {
+                        //DrawSymbol(line3.X2, line3.Y2);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void DrawSymbol(double x, double y)
+        {
+            Rectangle rect = new Rectangle();
+            rect.Width = (canvas.Width / size) * 0.6;
+            rect.Height = (canvas.Height / size) * 0.6;
+            rect.Fill = Brushes.Transparent;
+            rect.Stroke = Brushes.Red;
+            rect.StrokeThickness = rect.Width / 5;
+
+            Canvas.SetLeft(rect, x - (canvas.Width/size)*0.3);
+            Canvas.SetTop(rect, y - (canvas.Height/size)*0.3);
+
+            canvas.Children.Add(rect);
+        }
 
         private int getX(long id)
         { 
@@ -567,7 +671,7 @@ namespace PR24_2017_PZ2
             {
                 for (int l = 0; l < pointMatrix.GetLength(1); l++)
                 {
-                    if (pointMatrix[k, l] == 0 || pointMatrix[k, l] == 2)  //u drugoj iteraciji moze da se preseca pa vod nije prepreka
+                    if (pointMatrix[k, l] == 0 || pointMatrix[k, l] == 2 || pointMatrix[k, l] == 5)  //u drugoj iteraciji moze da se preseca pa vod nije prepreka
                     {
                         visited[k, l] = false;
                     }
@@ -672,7 +776,7 @@ namespace PR24_2017_PZ2
                 Ellipse circle = new Ellipse();
                 circle.Width = (canvas.Width / size) * 0.8;
                 circle.Height = (canvas.Height / size) * 0.8;
-                circle.Fill = Brushes.Red;
+                circle.Fill = Brushes.Orange;
                 circle.Uid = sub.Id.ToString();
                 circle.ToolTip = "Name: " + sub.Name + ", ID: " + sub.Id;
 
