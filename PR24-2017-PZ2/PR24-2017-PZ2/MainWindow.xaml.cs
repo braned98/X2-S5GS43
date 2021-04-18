@@ -373,15 +373,14 @@ namespace PR24_2017_PZ2
 
                 if(destination != null)  //ako je destinacija != null, onda je algoritam nasao put do odredisnog cvora
                 {
-                    bool isFirst = true;
 
                     while (destination.Parent != null) //vracam se do izvora tako sto pratim roditelje svakog cvora i iscrtavam liniju do njega
                     {                                 //izvor nema roditeljski cvor(logicno) pa se kod njega iteracija zavrsava, sto je super
                         Line ln = new Line();
                         ln.X1 = (destination.X * (canvas.Width / size)) + (canvas.Width / (2*size));
-                        ln.Y1 = destination.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
+                        ln.Y1 = canvas.Height - destination.Y * (canvas.Height / size) - (canvas.Height / (2 * size));
                         ln.X2 = destination.Parent.X * (canvas.Width / size) + (canvas.Width / (2 * size));
-                        ln.Y2 = destination.Parent.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
+                        ln.Y2 =  canvas.Height - destination.Parent.Y * (canvas.Height / size) - (canvas.Height / (2 * size));
                         //pointMatrix[destination.X, destination.Y] = 2;
                         if ((pointMatrix[destination.X, destination.Y] == 0))
                         {
@@ -396,7 +395,6 @@ namespace PR24_2017_PZ2
                         destination = destination.Parent;
                         drawnLines.Add(ln);
                        
-                        //isFirst = false;
                     }
                     deleteLines.Add(line);
 
@@ -497,9 +495,9 @@ namespace PR24_2017_PZ2
                     {                                 //izvor nema roditeljski cvor(logicno) pa se kod njega iteracija zavrsava, sto je super
                         Line ln = new Line();
                         ln.X1 = (destination.X * (canvas.Width / size)) + (canvas.Width / (2 * size));
-                        ln.Y1 = destination.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
+                        ln.Y1 = canvas.Height - destination.Y * (canvas.Height / size) - (canvas.Height / (2 * size));
                         ln.X2 = destination.Parent.X * (canvas.Width / size) + (canvas.Width / (2 * size));
-                        ln.Y2 = destination.Parent.Y * (canvas.Height / size) + (canvas.Height / (2 * size));
+                        ln.Y2 = canvas.Height - destination.Parent.Y * (canvas.Height / size) - (canvas.Height / (2 * size));
                         //pointMatrix[destination.X, destination.Y] = 2;
                         ln.Fill = Brushes.Blue;
                         ln.Stroke = Brushes.Blue;
@@ -551,7 +549,7 @@ namespace PR24_2017_PZ2
                         rect.StrokeThickness = rect.Width / 5;
 
                         Canvas.SetLeft(rect, x + (canvas.Width / size) * 0.2);
-                        Canvas.SetTop(rect, y + (canvas.Height / size) * 0.2);
+                        Canvas.SetBottom(rect, y + (canvas.Height / size) * 0.2);
 
                         canvas.Children.Add(rect);
                     }
@@ -577,9 +575,7 @@ namespace PR24_2017_PZ2
                 if(drawnLines[i].X2 == line2.X1 && drawnLines[i].Y2 == line2.Y1)
                 {
                     string lineID = drawnLines[i].Uid.Split(':')[0];
-
-                   
-
+                    
                     Line line3 = drawnLines[i];
                     Line line4 = drawnLines[i + 1];
 
@@ -751,7 +747,7 @@ namespace PR24_2017_PZ2
                 circle.ToolTip = "Name: " + sub.Name + ", ID: " + sub.Id;
 
                 Canvas.SetLeft(circle, sub.X* (canvas.Width / size) + 0.1 * (canvas.Width / size)); //pomeram za 10% po x osi
-                Canvas.SetTop(circle, sub.Y* (canvas.Height / size) + 0.1 * (canvas.Width / size)); //po y osi  DA BUDU U CENTRU PODEOKA
+                Canvas.SetBottom(circle, sub.Y* (canvas.Height / size) + 0.1 * (canvas.Width / size)); //po y osi  DA BUDU U CENTRU PODEOKA
 
                 canvas.Children.Add(circle);
             }
@@ -769,7 +765,7 @@ namespace PR24_2017_PZ2
                 circle.ToolTip = "Name: " + sub.Name + ", ID: " + sub.Id;
 
                 Canvas.SetLeft(circle, sub.X *(canvas.Width/size) + 0.1 * (canvas.Width / size));
-                Canvas.SetTop(circle, sub.Y *(canvas.Height/size) + 0.1 * (canvas.Width / size));
+                Canvas.SetBottom(circle, sub.Y *(canvas.Height/size) + 0.1 * (canvas.Width / size));
 
                 canvas.Children.Add(circle);
             }
@@ -789,7 +785,7 @@ namespace PR24_2017_PZ2
                 circle.ToolTip = "Name: " + sub.Name + ", ID: " + sub.Id;
 
                 Canvas.SetLeft(circle, sub.X * (canvas.Width / size) + 0.1 * (canvas.Width / size));
-                Canvas.SetTop(circle, sub.Y * (canvas.Height / size) + 0.1 * (canvas.Width / size));
+                Canvas.SetBottom(circle, sub.Y * (canvas.Height / size) + 0.1 * (canvas.Width / size));
 
                 canvas.Children.Add(circle);
             }
