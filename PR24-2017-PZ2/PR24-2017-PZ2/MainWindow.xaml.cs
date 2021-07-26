@@ -36,6 +36,11 @@ namespace PR24_2017_PZ2
         List<LineEntity> lines = new List<LineEntity>();
         List<Line> drawnLines = new List<Line>();
 
+        private System.Windows.Point start = new System.Windows.Point();
+        private System.Windows.Point diffOffset = new System.Windows.Point();
+        private int zoomMax = 35;
+        private int zoomCurent = 1;
+
         int numLn = 0;
         int cnt = 0;
    
@@ -284,8 +289,8 @@ namespace PR24_2017_PZ2
 
              }*/
 
-            BFS_Algorithm();
-            BFS_Algorithm2();
+            //BFS_Algorithm();
+            //BFS_Algorithm2();
             
         }
 
@@ -803,7 +808,7 @@ namespace PR24_2017_PZ2
             }
         }
 
-        private void MouseWheelZoom(object sender, MouseWheelEventArgs e)
+       /* private void MouseWheelZoom(object sender, MouseWheelEventArgs e)
         {
             
 
@@ -827,7 +832,7 @@ namespace PR24_2017_PZ2
             canvas.LayoutTransform = scale;
           
             e.Handled = true;
-        }
+        }*/
 
         private void checkMatrix(double xx, double yy, out double newX, out double newY)
         {
@@ -868,8 +873,66 @@ namespace PR24_2017_PZ2
                 }
                 num = num + 1;
              }
+             
+        }
 
-            
+        private void LeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            canvas.CaptureMouse();
+            start = e.GetPosition(this);
+            diffOffset.X = translacija.X;
+            diffOffset.Y = translacija.Y;
+        }
+
+        private void LeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            canvas.ReleaseMouseCapture();
+        }
+
+        private void MouseWheelAction(object sender, MouseWheelEventArgs e)
+        {
+            System.Windows.Point p = e.MouseDevice.GetPosition(this);
+            double scaleX = 1;
+            double scaleY = 1;
+
+
+            if (e.Delta > 0 && zoomCurent < zoomMax)
+            {
+
+                skaliranje.CenterX = canvas.Width / 2;
+                skaliranje.CenterY = canvas.Height / 2;
+                scaleX = skaliranje.ScaleX + 0.1;
+                scaleY = skaliranje.ScaleY + 0.1;
+                zoomCurent++;
+                skaliranje.ScaleX = scaleX;
+                skaliranje.ScaleY = scaleY;
+            }
+            else if (e.Delta <= 0 && zoomCurent > 1.0)
+            {
+                skaliranje.CenterX = canvas.Width / 2;
+                skaliranje.CenterY = canvas.Height / 2;
+                scaleX = skaliranje.ScaleX - 0.1;
+                scaleY = skaliranje.ScaleY - 0.1;
+                zoomCurent--;
+                skaliranje.ScaleX = scaleX;
+                skaliranje.ScaleY = scaleY;
+            }
+        }
+
+        private void MouseMoveAction(object sender, MouseEventArgs e)
+        {
+            if (canvas.IsMouseCaptured)
+            {
+                System.Windows.Point end = e.GetPosition(this);
+                double offsetX = end.X - start.X;
+                double offsetY = end.Y - start.Y;
+                double w = this.Width;
+                double h = this.Height;
+                double translateX = (offsetX * 100000) / w;
+                double translateY = -(offsetY * 100000) / h;
+                translacija.X = diffOffset.X + (translateX / (100 * skaliranje.ScaleX));
+                translacija.Y = diffOffset.Y - (translateY / (100 * skaliranje.ScaleX));
+            }
         }
     }
 }

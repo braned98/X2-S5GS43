@@ -11,10 +11,17 @@
         Title="PR24-2017" Height="680" Width="680" Loaded="Load" >
 
     <Grid>
-        <ScrollViewer CanContentScroll="True" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
-            <Canvas Name="canvas" Width="600" Height="600" MouseWheel="MouseWheelZoom" Background="Transparent" Margin="0,0,0,0" MouseRightButtonDown="Right_Click">
-
-            </Canvas>
-        </ScrollViewer>
+        <DockPanel>
+            <ScrollViewer CanContentScroll="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Canvas Name="canvas" Width="600" Height="600" Background="Transparent" Margin="0,0,0,0" MouseLeftButtonDown="LeftButtonDown" MouseRightButtonDown="Right_Click" MouseWheel="MouseWheelAction" MouseMove="MouseMoveAction" MouseLeftButtonUp="LeftButtonUp">
+                    <Canvas.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform x:Name="skaliranje" ScaleX="1" ScaleY="1" />
+                            <TranslateTransform x:Name="translacija" X="0" Y="0" />
+                        </TransformGroup>
+                    </Canvas.RenderTransform>
+                </Canvas>
+            </ScrollViewer>
+          </DockPanel>
     </Grid>
 </Window>
