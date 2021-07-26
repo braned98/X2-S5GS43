@@ -35,6 +35,7 @@ namespace PR24_2017_PZ2
         Dictionary<long, LineEntity> lineEnt = new Dictionary<long, LineEntity>();
         List<LineEntity> lines = new List<LineEntity>();
         List<Line> drawnLines = new List<Line>();
+        List<Line> openSwcLine = new List<Line>();
 
         private System.Windows.Point start = new System.Windows.Point();
         private System.Windows.Point diffOffset = new System.Windows.Point();
@@ -43,6 +44,8 @@ namespace PR24_2017_PZ2
 
         int numLn = 0;
         int cnt = 0;
+
+        bool showOpenLines = true;
    
 
         double[,] pointMatrix = new double[501, 501];
@@ -310,6 +313,7 @@ namespace PR24_2017_PZ2
             lines.Insert(0, firstLine);
 
             List<LineEntity> deleteLines = new List<LineEntity>();
+
             
             foreach(LineEntity line in lines)
             {
@@ -326,6 +330,8 @@ namespace PR24_2017_PZ2
 
                 Node source = new Node(x, y);
                 Node destination = null;
+
+                bool isOpen = false;
 
                 qNodes.Enqueue(source);
 
@@ -379,6 +385,25 @@ namespace PR24_2017_PZ2
                 if(destination != null)  //ako je destinacija != null, onda je algoritam nasao put do odredisnog cvora
                 {
 
+                    if (checkIfSwitch(line))
+                    {
+                        if (swcEnt.ContainsKey(line.FirstEnd))
+                        {
+                            if(swcEnt[line.FirstEnd].Status == "Open")
+                            {
+                                isOpen = true;
+                            }
+                        }
+
+                        if (swcEnt.ContainsKey(line.SecondEnd))
+                        {
+                            if (swcEnt[line.SecondEnd].Status == "Open")
+                            {
+                                isOpen = true;
+                            }
+                        }
+                    }
+
                     while (destination.Parent != null) //vracam se do izvora tako sto pratim roditelje svakog cvora i iscrtavam liniju do njega
                     {                                 //izvor nema roditeljski cvor(logicno) pa se kod njega iteracija zavrsava, sto je super
                         Line ln = new Line();
@@ -397,6 +422,10 @@ namespace PR24_2017_PZ2
                         ln.Uid = line.Id.ToString() + ":" + line.FirstEnd.ToString() + ":" + line.SecondEnd.ToString();
                         ln.ToolTip = "Name: " + line.Name + ", ID: " + line.Id;
                         canvas.Children.Add(ln);
+                        if (isOpen)
+                        {
+                            openSwcLine.Add(ln);
+                        }
                         destination = destination.Parent;
                         drawnLines.Add(ln);
                        
@@ -438,6 +467,8 @@ namespace PR24_2017_PZ2
 
                 Node source = new Node(x, y);
                 Node destination = null;
+
+                bool isOpen = false;
 
                 qNodes.Enqueue(source);
 
@@ -496,6 +527,25 @@ namespace PR24_2017_PZ2
                     bool isLine = false;
                     bool isFirst = true;
 
+                    if (checkIfSwitch(line))
+                    {
+                        if (swcEnt.ContainsKey(line.FirstEnd))
+                        {
+                            if (swcEnt[line.FirstEnd].Status == "Open")
+                            {
+                                isOpen = true;
+                            }
+                        }
+
+                        if (swcEnt.ContainsKey(line.SecondEnd))
+                        {
+                            if (swcEnt[line.SecondEnd].Status == "Open")
+                            {
+                                isOpen = true;
+                            }
+                        }
+                    }
+
                     while (destination.Parent != null) //vracam se do izvora tako sto pratim roditelje svakog cvora i iscrtavam liniju do njega
                     {                                 //izvor nema roditeljski cvor(logicno) pa se kod njega iteracija zavrsava, sto je super
                         Line ln = new Line();
@@ -510,6 +560,10 @@ namespace PR24_2017_PZ2
                         ln.Uid = line.Id.ToString() + ":" + line.FirstEnd.ToString() + ":" + line.SecondEnd.ToString();
                         ln.ToolTip = "Name: " + line.Name + ", ID: " + line.Id;
                         canvas.Children.Add(ln);
+                        if (isOpen)
+                        {
+                            openSwcLine.Add(ln);
+                        }
                         completeLine.Add(ln);
                         drawnLines.Add(ln);
 
@@ -534,7 +588,20 @@ namespace PR24_2017_PZ2
             }
             checkAll();
         }
-        
+
+        private bool checkIfSwitch(LineEntity line)
+        {
+            if(swcEnt.ContainsKey(line.FirstEnd) || swcEnt.ContainsKey(line.SecondEnd))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
         private void checkAll()
         {
             for (int k = 0; k < pointMatrix.GetLength(0); k++)
@@ -889,6 +956,8 @@ namespace PR24_2017_PZ2
             canvas.ReleaseMouseCapture();
         }
 
+        
+
         private void MouseWheelAction(object sender, MouseWheelEventArgs e)
         {
             System.Windows.Point p = e.MouseDevice.GetPosition(this);
@@ -934,5 +1003,32 @@ namespace PR24_2017_PZ2
                 translacija.Y = diffOffset.Y - (translateY / (100 * skaliranje.ScaleX));
             }
         }
+
+        private void HideActive(object sender, RoutedEventArgs e)
+        {
+            if (showOpenLines)
+            {
+                foreach (Line ln in openSwcLine)
+                {
+                    canvas.Children.Remove(ln);
+                }
+            }
+            showOpenLines = false;
+        }
+
+        private void ShowActive(object sender, RoutedEventArgs e)
+        {
+            if (!showOpenLines)
+            {
+                foreach (Line ln in openSwcLine)
+                {
+                    canvas.Children.Add(ln);
+                }
+            }
+            showOpenLines = true;
+        }
+        
+
+        
     }
 }

@@ -12,6 +12,14 @@
 
     <Grid>
         <DockPanel>
+            <Grid DockPanel.Dock="Top" Background="LightGray" Height="50">
+                <StackPanel Orientation="Horizontal">
+                    <Button Height="30" Margin="5" Click="ShowActive">ShowActive</Button>
+                    <Button Height="30" Margin="5" Click="HideActive">HideActive</Button>
+                    <Button Height="30" Margin="5">Entities Display Settings</Button>
+                    <Button Height="30" Margin="5">Dimensions Settings</Button>
+                </StackPanel>
+            </Grid>
             <ScrollViewer CanContentScroll="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <Canvas Name="canvas" Width="600" Height="600" Background="Transparent" Margin="0,0,0,0" MouseLeftButtonDown="LeftButtonDown" MouseRightButtonDown="Right_Click" MouseWheel="MouseWheelAction" MouseMove="MouseMoveAction" MouseLeftButtonUp="LeftButtonUp">
                     <Canvas.RenderTransform>
