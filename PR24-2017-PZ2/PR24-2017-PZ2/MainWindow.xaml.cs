@@ -38,7 +38,7 @@ namespace PR24_2017_PZ2
 
         private System.Windows.Point start = new System.Windows.Point();
         private System.Windows.Point diffOffset = new System.Windows.Point();
-        private int zoomMax = 35;
+        private int zoomMax = 100;
         private int zoomCurent = 1;
 
         int numLn = 0;
@@ -289,7 +289,7 @@ namespace PR24_2017_PZ2
 
              }*/
 
-            //BFS_Algorithm();
+            BFS_Algorithm();
             //BFS_Algorithm2();
             
         }
