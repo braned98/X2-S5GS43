@@ -29,9 +29,9 @@ namespace PR24_2017_PZ2
         double minX, maxX;
         double minY, maxY;
         int size = 500;       ///500x500
-        Dictionary<long, SubstationEntity> subEnt = new Dictionary<long, SubstationEntity>();
-        Dictionary<long, NodeEntity> nodeEnt = new Dictionary<long, NodeEntity>();
-        Dictionary<long, SwitchEntity> swcEnt = new Dictionary<long, SwitchEntity>();
+        public Dictionary<long, SubstationEntity> subEnt = new Dictionary<long, SubstationEntity>();
+        public Dictionary<long, NodeEntity> nodeEnt = new Dictionary<long, NodeEntity>();
+        public Dictionary<long, SwitchEntity> swcEnt = new Dictionary<long, SwitchEntity>();
         Dictionary<long, LineEntity> lineEnt = new Dictionary<long, LineEntity>();
         List<LineEntity> lines = new List<LineEntity>();
         List<Line> drawnLines = new List<Line>();
@@ -292,7 +292,7 @@ namespace PR24_2017_PZ2
 
              }*/
 
-            BFS_Algorithm();
+            //BFS_Algorithm();
             //BFS_Algorithm2();
             
         }
@@ -1002,6 +1002,14 @@ namespace PR24_2017_PZ2
                 translacija.X = diffOffset.X + (translateX / (100 * skaliranje.ScaleX));
                 translacija.Y = diffOffset.Y - (translateY / (100 * skaliranje.ScaleX));
             }
+        }
+
+        private void DisplaySettingClick(object sender, RoutedEventArgs e)
+        {
+            DisplaySetting displaySettingWindow = new DisplaySetting(this);
+            displaySettingWindow.Owner = Window.GetWindow(this);
+            displaySettingWindow.Show();
+            
         }
 
         private void HideActive(object sender, RoutedEventArgs e)

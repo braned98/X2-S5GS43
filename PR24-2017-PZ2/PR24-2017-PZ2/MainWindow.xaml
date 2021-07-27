@@ -16,7 +16,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Button Height="30" Margin="5" Click="ShowActive">ShowActive</Button>
                     <Button Height="30" Margin="5" Click="HideActive">HideActive</Button>
-                    <Button Height="30" Margin="5">Entities Display Settings</Button>
+                    <Button Height="30" Margin="5" Click="DisplaySettingClick">Entities Display Settings</Button>
                     <Button Height="30" Margin="5">Dimensions Settings</Button>
                 </StackPanel>
             </Grid>

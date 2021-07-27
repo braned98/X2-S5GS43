@@ -1,0 +1,63 @@
+﻿<Window x:Class="PR24_2017_PZ2.DisplaySetting"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PR24_2017_PZ2"
+        mc:Ignorable="d"
+        Title="DisplaySetting" Height="270" Width="500" Loaded="DisplaySettingLoaded">
+    <Grid>
+        <StackPanel>
+            <DockPanel Margin="0, 20, 0, 0">
+                <Label Width="150">Node Entity</Label>
+                <ComboBox Name="NodeColor" Height="25" Width="100">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="50" Height="50" Fill="{Binding Name}"/>
+                                <TextBlock Text="{Binding Name}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button Name="OpenFile1" Click="OpenFile_Click1" Margin="30,0,0,0" Width="100">Open file</Button>
+                <Image Name="nodePic" Width="25" Height="25"></Image>
+            </DockPanel>
+            <DockPanel Margin="0, 20, 0, 0">
+                <Label Width="150">Switch Entity</Label>
+                <ComboBox Name="SwcColor" Height="25" Width="100">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="50" Height="50" Fill="{Binding Name}"/>
+                                <TextBlock Text="{Binding Name}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button Name="OpenFile2" Margin="30,0,0,0" Click="OpenFile_Click2" Width="100">Open file</Button>
+                <Image Name="swcPic" Width="25" Height="25"></Image>
+            </DockPanel>
+            <DockPanel Margin="0, 20, 0, 0">
+                <Label Width="150">Substation Entity</Label>
+                <ComboBox Name="SubColor" Height="25" Width="100">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="50" Height="50" Fill="{Binding Name}"/>
+                                <TextBlock Text="{Binding Name}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button Name="OpenFile3" Margin="30,0,0,0" Click="OpenFile_Click3" Width="100">Open file</Button>
+                <Image Name="subPic" Width="25" Height="25"></Image>
+            </DockPanel>
+            <DockPanel Margin="0,40,0,0" HorizontalAlignment="Center">
+                <Button Width="70" Height="30" Margin="0,0,20,0" Click="ConfirmClick">Confirm</Button>
+                <Button Width="70" Click="CancelClick">Cancel</Button>
+            </DockPanel>
+        </StackPanel>
+        
+    </Grid>
+</Window>
