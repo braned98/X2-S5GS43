@@ -60,28 +60,36 @@ namespace PR24_2017_PZ2
 
             foreach (UIElement v in canvas.Children)
             {
-                long id = long.Parse(v.Uid);
-                if (this.mainWin.subEnt.ContainsKey(id))
+                long a;
+                if (long.TryParse(v.Uid, out a))
                 {
-                    if ((v as Ellipse).Fill.GetType() != typeof(ImageBrush))
+                    long id = long.Parse(v.Uid);
+                    if (this.mainWin.subEnt.ContainsKey(id))
                     {
-                        SubCol = GetColorName(new BrushConverter().ConvertFromString((v as Ellipse).Fill.ToString()) as SolidColorBrush);
-                        break;
+                        if ((v as Ellipse).Fill.GetType() != typeof(ImageBrush))
+                        {
+                            SubCol = GetColorName(new BrushConverter().ConvertFromString((v as Ellipse).Fill.ToString()) as SolidColorBrush);
+                            break;
+                        }
                     }
-                }   
+                }
             }
 
             SubColor.SelectedIndex = colors.IndexOf(SubCol);
 
             foreach (UIElement v in canvas.Children)
             {
-                long id = long.Parse(v.Uid);
-                if (this.mainWin.swcEnt.ContainsKey(id))
+                long a;
+                if (long.TryParse(v.Uid, out a))
                 {
-                    if ((v as Ellipse).Fill.GetType() != typeof(ImageBrush))
+                    long id = long.Parse(v.Uid);
+                    if (this.mainWin.swcEnt.ContainsKey(id))
                     {
-                        SwcCol = GetColorName(new BrushConverter().ConvertFromString((v as Ellipse).Fill.ToString()) as SolidColorBrush);
-                        break;
+                        if ((v as Ellipse).Fill.GetType() != typeof(ImageBrush))
+                        {
+                            SwcCol = GetColorName(new BrushConverter().ConvertFromString((v as Ellipse).Fill.ToString()) as SolidColorBrush);
+                            break;
+                        }
                     }
                 }
             }
@@ -90,13 +98,18 @@ namespace PR24_2017_PZ2
 
             foreach (UIElement v in canvas.Children)
             {
-                long id = long.Parse(v.Uid);
-                if (this.mainWin.nodeEnt.ContainsKey(id))
+                long a;
+                if (long.TryParse(v.Uid, out a))
                 {
-                    if ((v as Ellipse).Fill.GetType() != typeof(ImageBrush))
+
+                    long id = long.Parse(v.Uid);
+                    if (this.mainWin.nodeEnt.ContainsKey(id))
                     {
-                        NodeCol = GetColorName(new BrushConverter().ConvertFromString((v as Ellipse).Fill.ToString()) as SolidColorBrush);
-                        break;
+                        if ((v as Ellipse).Fill.GetType() != typeof(ImageBrush))
+                        {
+                            NodeCol = GetColorName(new BrushConverter().ConvertFromString((v as Ellipse).Fill.ToString()) as SolidColorBrush);
+                            break;
+                        }
                     }
                 }
             }
@@ -160,9 +173,13 @@ namespace PR24_2017_PZ2
             {
                 foreach(UIElement el in mainWin.canvas.Children)
                 {
-                    if (mainWin.nodeEnt.ContainsKey(long.Parse(el.Uid)))
+                    long a;
+                    if (long.TryParse(el.Uid, out a))
                     {
-                        (el as Ellipse).Fill = new ImageBrush(NodeP);
+                        if (mainWin.nodeEnt.ContainsKey(long.Parse(el.Uid)))
+                        {
+                            (el as Ellipse).Fill = new ImageBrush(NodeP);
+                        }
                     }
                 }
             }
@@ -170,9 +187,13 @@ namespace PR24_2017_PZ2
             {
                 foreach (UIElement el in mainWin.canvas.Children)
                 {
-                    if (mainWin.swcEnt.ContainsKey(long.Parse(el.Uid)))
+                    long a;
+                    if (long.TryParse(el.Uid, out a))
                     {
-                        (el as Ellipse).Fill = new ImageBrush(SwcP);
+                        if (mainWin.swcEnt.ContainsKey(long.Parse(el.Uid)))
+                        {
+                            (el as Ellipse).Fill = new ImageBrush(SwcP);
+                        }
                     }
                 }
             }
@@ -180,9 +201,13 @@ namespace PR24_2017_PZ2
             {
                 foreach (UIElement el in mainWin.canvas.Children)
                 {
-                    if (mainWin.subEnt.ContainsKey(long.Parse(el.Uid)))
+                    long a;
+                    if (long.TryParse(el.Uid, out a))
                     {
-                        (el as Ellipse).Fill = new ImageBrush(SubP);
+                        if (mainWin.subEnt.ContainsKey(long.Parse(el.Uid)))
+                        {
+                            (el as Ellipse).Fill = new ImageBrush(SubP);
+                        }
                     }
                 }
             }
@@ -190,10 +215,14 @@ namespace PR24_2017_PZ2
             {
                 foreach (UIElement el in mainWin.canvas.Children)
                 {
-                    if (mainWin.nodeEnt.ContainsKey(long.Parse(el.Uid)))
+                    long a;
+                    if (long.TryParse(el.Uid, out a))
                     {
-                        System.Windows.Media.Color col = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colors[NodeColor.SelectedIndex]);
-                        (el as Ellipse).Fill = new SolidColorBrush(col);
+                        if (mainWin.nodeEnt.ContainsKey(long.Parse(el.Uid)))
+                        {
+                            System.Windows.Media.Color col = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colors[NodeColor.SelectedIndex]);
+                            (el as Ellipse).Fill = new SolidColorBrush(col);
+                        }
                     }
                 }
             }
@@ -201,10 +230,14 @@ namespace PR24_2017_PZ2
             {
                 foreach (UIElement el in mainWin.canvas.Children)
                 {
-                    if (mainWin.swcEnt.ContainsKey(long.Parse(el.Uid)))
+                    long a;
+                    if (long.TryParse(el.Uid, out a))
                     {
-                        System.Windows.Media.Color col = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colors[SwcColor.SelectedIndex]);
-                        (el as Ellipse).Fill = new SolidColorBrush(col);
+                        if (mainWin.swcEnt.ContainsKey(long.Parse(el.Uid)))
+                        {
+                            System.Windows.Media.Color col = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colors[SwcColor.SelectedIndex]);
+                            (el as Ellipse).Fill = new SolidColorBrush(col);
+                        }
                     }
                 }
             }
@@ -212,10 +245,14 @@ namespace PR24_2017_PZ2
             {
                 foreach (UIElement el in mainWin.canvas.Children)
                 {
-                    if (mainWin.subEnt.ContainsKey(long.Parse(el.Uid)))
+                    long a;
+                    if (long.TryParse(el.Uid, out a))
                     {
-                        System.Windows.Media.Color col = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colors[SubColor.SelectedIndex]);
-                        (el as Ellipse).Fill = new SolidColorBrush(col);
+                        if (mainWin.subEnt.ContainsKey(long.Parse(el.Uid)))
+                        {
+                            System.Windows.Media.Color col = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colors[SubColor.SelectedIndex]);
+                            (el as Ellipse).Fill = new SolidColorBrush(col);
+                        }
                     }
                 }
             }

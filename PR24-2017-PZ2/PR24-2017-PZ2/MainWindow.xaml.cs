@@ -28,14 +28,14 @@ namespace PR24_2017_PZ2
         double _zoomValue = 1.0;
         double minX, maxX;
         double minY, maxY;
-        int size = 500;       ///500x500
+        public int size = 500;       ///500x500
         public Dictionary<long, SubstationEntity> subEnt = new Dictionary<long, SubstationEntity>();
         public Dictionary<long, NodeEntity> nodeEnt = new Dictionary<long, NodeEntity>();
         public Dictionary<long, SwitchEntity> swcEnt = new Dictionary<long, SwitchEntity>();
-        Dictionary<long, LineEntity> lineEnt = new Dictionary<long, LineEntity>();
-        List<LineEntity> lines = new List<LineEntity>();
-        List<Line> drawnLines = new List<Line>();
-        List<Line> openSwcLine = new List<Line>();
+        public Dictionary<long, LineEntity> lineEnt = new Dictionary<long, LineEntity>();
+        public List<LineEntity> lines = new List<LineEntity>();
+        public List<Line> drawnLines = new List<Line>();
+        public List<Line> openSwcLine = new List<Line>();
 
         private System.Windows.Point start = new System.Windows.Point();
         private System.Windows.Point diffOffset = new System.Windows.Point();
@@ -46,9 +46,9 @@ namespace PR24_2017_PZ2
         int cnt = 0;
 
         bool showOpenLines = true;
-   
 
-        double[,] pointMatrix = new double[501, 501];
+
+        public double[,] pointMatrix;
         
         public MainWindow()
         {
@@ -57,6 +57,13 @@ namespace PR24_2017_PZ2
 
         private void Load(object sender, RoutedEventArgs e)
         {
+            CallLoad();
+        }
+
+        public void CallLoad()
+        {
+            pointMatrix = new double[size+1, size+1];
+
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load("Geographic.xml");
 
@@ -292,14 +299,14 @@ namespace PR24_2017_PZ2
 
              }*/
 
-            //BFS_Algorithm();
-            //BFS_Algorithm2();
+            BFS_Algorithm();
+            BFS_Algorithm2();
             
         }
 
         private void BFS_Algorithm()
         {
-            bool[,] visited = new bool[501, 501];
+            bool[,] visited = new bool[size+1, size+1];
 
             updateVisited(ref visited);
 
@@ -354,7 +361,7 @@ namespace PR24_2017_PZ2
                         visited[nNode.X, nNode.Y] = true;
                     }
 
-                    if (node.Y + 1 < 501 && visited[node.X, node.Y + 1] == false) //susedno polje ispod
+                    if (node.Y + 1 < size+1 && visited[node.X, node.Y + 1] == false) //susedno polje ispod
                     {
                         Node nNode = new Node(node.X, node.Y + 1);
                         nNode.Parent = node;
@@ -370,7 +377,7 @@ namespace PR24_2017_PZ2
                         visited[nNode.X, nNode.Y] = true;
                     }
 
-                    if (node.X + 1 < 501 && visited[node.X + 1, node.Y] == false) //susedno polje desno
+                    if (node.X + 1 < size+1 && visited[node.X + 1, node.Y] == false) //susedno polje desno
                     {
                         Node nNode = new Node(node.X + 1, node.Y);
                         nNode.Parent = node;
@@ -447,7 +454,7 @@ namespace PR24_2017_PZ2
         //BFS sa presecanjima
         private void BFS_Algorithm2()
         {
-            bool[,] visited = new bool[501, 501];
+            bool[,] visited = new bool[size+1, size+1];
 
             updateVisited2(ref visited);
             
@@ -491,7 +498,7 @@ namespace PR24_2017_PZ2
                         visited[nNode.X, nNode.Y] = true;
                     }
 
-                    if (node.Y + 1 < 501 && visited[node.X, node.Y + 1] == false) //susedno polje ispod
+                    if (node.Y + 1 < size+1 && visited[node.X, node.Y + 1] == false) //susedno polje ispod
                     {
                         Node nNode = new Node(node.X, node.Y + 1);
                         nNode.Parent = node;
@@ -507,7 +514,7 @@ namespace PR24_2017_PZ2
                         visited[nNode.X, nNode.Y] = true;
                     }
 
-                    if (node.X + 1 < 501 && visited[node.X + 1, node.Y] == false) //susedno polje desno
+                    if (node.X + 1 < size+1 && visited[node.X + 1, node.Y] == false) //susedno polje desno
                     {
                         Node nNode = new Node(node.X + 1, node.Y);
                         nNode.Parent = node;
@@ -746,7 +753,7 @@ namespace PR24_2017_PZ2
                 return 0;
             }else if(x == maxX)
             {
-                return 200;
+                return size;
             }
 
             double diff = maxX - minX;
@@ -764,7 +771,7 @@ namespace PR24_2017_PZ2
             }
             else if (y == maxY)
             {
-                return 200;
+                return size;
             }
 
             double diff = maxY - minY;
@@ -1012,6 +1019,12 @@ namespace PR24_2017_PZ2
             
         }
 
+        private void DimensionsClick(object sender, RoutedEventArgs e)
+        {
+            DimensionSetting dimensionSettingWindow = new DimensionSetting(this);
+            dimensionSettingWindow.Show();
+        }
+
         private void HideActive(object sender, RoutedEventArgs e)
         {
             if (showOpenLines)
@@ -1036,7 +1049,7 @@ namespace PR24_2017_PZ2
             showOpenLines = true;
         }
         
-
+      
         
     }
 }
